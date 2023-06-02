@@ -73,7 +73,7 @@ namespace BugTracker.Controllers
 
             //Load SelectLists with data ie. PMList & PriorityList
             model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "FullName");
-            model.PriorityList = new SelectList(await _lookupService.GetProjectPrioritiesAsync(), "ID", "Name");
+            model.PriorityList = new SelectList(await _lookupService.GetProjectPrioritiesAsync(), "Id", "Name");
 
             return View(model);
         }
@@ -103,7 +103,7 @@ namespace BugTracker.Controllers
                     //Add PM if one was chosen
                     if(!string.IsNullOrEmpty(model.PmId))
                     {
-                        await _projectService.AddUserToProjectAsync(model.PmId, model.Project.Id);
+                        await _projectService.AddProjectManagerAsync(model.PmId, model.Project.Id);
                     }
 
                 }
