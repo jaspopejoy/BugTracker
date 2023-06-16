@@ -345,18 +345,18 @@ namespace BugTracker.Services
             {
                 if (await _roleService.IsUserInRoleAsync(btUser, Roles.Admin.ToString()))
                 {
-                    tickets = (await _projectService.GetAllProjectsByCompany(companyId))
+                    tickets = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
                                                     .SelectMany(p => p.Tickets).ToList();
                 }
                 else if (await _roleService.IsUserInRoleAsync(btUser, Roles.Developer.ToString()))
                 {
-                    tickets = (await _projectService.GetAllProjectsByCompany(companyId))
+                    tickets = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
                                                     .SelectMany(p => p.Tickets)
                                                     .Where(t => t.DeveloperUserId == userId).ToList();
                 }
                 else if (await _roleService.IsUserInRoleAsync(btUser, Roles.Submitter.ToString()))
                 {
-                    tickets = (await _projectService.GetAllProjectsByCompany(companyId))
+                    tickets = (await _projectService.GetAllProjectsByCompanyAsync(companyId))
                                                     .SelectMany(p => p.Tickets)
                                                     .Where(t => t.OwnerUserId == userId).ToList();
                 }
