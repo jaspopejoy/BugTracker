@@ -7,16 +7,30 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using BugTracker.Data;
 using BugTracker.Models;
+using Microsoft.AspNetCore.Identity;
+using BugTracker.Extensions;
+using BugTracker.Models.Enums;
+using BugTracker.Services.Interfaces;
+using System.ComponentModel.Design;
+using AspNetCore;
 
 namespace BugTracker.Controllers
 {
     public class TicketsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<BTUser> _userManager;
+        private readonly IBTProjectService _projectService;
+        private readonly IBTLookupService _lookupService;
+        private readonly IBTTicketService _ticketService;
 
-        public TicketsController(ApplicationDbContext context)
+        public TicketsController(ApplicationDbContext context, UserManager<BTUser> userManager, IBTProjectService projectService, IBTLookupService lookupService, IBTTicketService ticketService)
         {
             _context = context;
+            _userManager = userManager;
+            _projectService = projectService;
+            _lookupService = lookupService;
+            _ticketService = ticketService;
         }
 
         // GET: Tickets
@@ -51,19 +65,26 @@ namespace BugTracker.Controllers
         }
 
         // GET: Tickets/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            ViewData["DeveloperUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["OwnerUserId"] = new SelectList(_context.Users, "Id", "Id");
-            ViewData["ProjectId"] = new SelectList(_context.Projects, "Id", "Name");
-            ViewData["TicketPriorityId"] = new SelectList(_context.TicketPriorities, "Id", "Id");
-            ViewData["TicketStatusId"] = new SelectList(_context.TicketStatuses, "Id", "Id");
-            ViewData["TicketTypeId"] = new SelectList(_context.TicketTypes, "Id", "Id");
+            BTUser btUser = await _userManager.GetUserAsync(User);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            if (User.IsInRole(nameof(Roles.Admin)))
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetAllProjectsByCompanyAsync(companyId), "Id", "Name");
+            }
+            else
+            {
+                ViewData["ProjectId"] = new SelectList(await _projectService.GetUserProjectsAsync(btUser.Id), "Id", "Name");
+            }
+
+            ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name");
+            ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name");
             return View();
         }
 
         // POST: Tickets/Create
-        // To protect from overposting attacks, enable the specific properties you want to bind to.
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,ProjectId,TicketTypeId,TicketPriorityId")] Ticket ticket)
@@ -125,7 +146,7 @@ namespace BugTracker.Controllers
             return View(ticket);
         }
 
-        // POST: Tickets/Edit/5
+        //// POST: Tickets/Edit/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Description,Created,Updated,Archived,ProjectId,TicketTypeId,TicketPriorityId,TicketStatusId,OwnerUserId,DeveloperUserId")] Ticket ticket)
@@ -160,10 +181,10 @@ namespace BugTracker.Controllers
                 return RedirectToAction(nameof(Index));
             }
 
+
             ViewData["TicketPriorityId"] = new SelectList(await _lookupService.GetTicketPrioritiesAsync(), "Id", "Name", ticket.TicketPriorityId);
             ViewData["TicketStatusId"] = new SelectList(await _lookupService.GetTicketStatusesAsync(), "Id", "Name", ticket.TicketStatusId);
             ViewData["TicketTypeId"] = new SelectList(await _lookupService.GetTicketTypesAsync(), "Id", "Name", ticket.TicketTypeId);
-
             return View(ticket);
         }
 
@@ -205,7 +226,7 @@ namespace BugTracker.Controllers
             {
                 _context.Tickets.Remove(ticket);
             }
-            
+
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
         }

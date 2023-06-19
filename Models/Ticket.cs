@@ -15,12 +15,13 @@ namespace BugTracker.Models
         public string? Title { get; set; }
 
         [Required]
-        [DisplayName]
+        [StringLength(100)]
+        [DisplayName("Description")]
         public string? Description { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayName("Created")]
-        public DateTimeOffset? Created { get; set; }
+        public DateTimeOffset Created { get; set; }
 
         [DataType(DataType.Date)]
         [DisplayName("Updated")]

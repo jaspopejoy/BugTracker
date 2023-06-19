@@ -19,7 +19,7 @@ namespace BugTracker.Models
         public string? NewValue { get; set; }
 
         [DisplayName("Date Modified")]
-        public DateTimeOffset? Created { get; set; }
+        public DateTimeOffset Created { get; set; }
 
         [DisplayName("Description of Change")]
         public string? Description { get; set; }

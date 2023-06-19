@@ -22,11 +22,11 @@ namespace BugTracker.Models
 
         [DisplayName("Start Date")]
         [DataType(DataType.Date)]
-        public DateTimeOffset? StartDate { get; set; }
+        public DateTimeOffset StartDate { get; set; }
 
         [DisplayName("End Date")]
         [DataType(DataType.Date)]
-        public DateTimeOffset? EndDate { get; set; }
+        public DateTimeOffset EndDate { get; set; }
 
         [DisplayName("Priority")]
         public int? ProjectPriorityId { get; set; }

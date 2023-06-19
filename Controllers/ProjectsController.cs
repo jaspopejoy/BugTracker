@@ -44,13 +44,17 @@ namespace BugTracker.Controllers
             _companyInfoService = companyInfoService;
         }
 
-        // GET: Projects
+        //GET: Projects
         public async Task<IActionResult> Index()
         {
-            var applicationDbContext = _context.Projects.Include(p => p.Company).Include(p => p.ProjectPriority);
-            return View(await applicationDbContext.ToListAsync());
+            List<Project> projects = new();
+            int companyId = User.Identity.GetCompanyId().Value;
+            projects = await _companyInfoService.GetAllProjectsAsync(companyId);
+
+            return View(projects);
         }
 
+        //GET: Projects/My Projects
         public async Task<IActionResult> MyProjects()
         {
             string userId = _userManager.GetUserId(User);
@@ -59,6 +63,7 @@ namespace BugTracker.Controllers
             return View(projects);
         }
 
+        //GET: Projects/All Projects
         public async Task<IActionResult> AllProjects()
         {
 
@@ -78,6 +83,15 @@ namespace BugTracker.Controllers
             return View(projects);
         }
 
+        //GET: Projects/Archived Projects
+        public async Task<IActionResult> ArchivedProjects()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = await _projectService.GetArchivedProjectsByCompanyAsync(companyId);
+            return View(projects);
+        }
+
         // GET: Projects/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -86,10 +100,10 @@ namespace BugTracker.Controllers
                 return NotFound();
             }
 
-            var project = await _context.Projects
-                .Include(p => p.Company)
-                .Include(p => p.ProjectPriority)
-                .FirstOrDefaultAsync(m => m.Id == id);
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            Project project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
+
             if (project == null)
             {
                 return NotFound();
