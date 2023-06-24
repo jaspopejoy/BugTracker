@@ -17,7 +17,7 @@ namespace BugTracker.Models
 
         [NotMapped]
         [Display(Name = "Full Name")]
-        public string? FullName { get { return $"{FirstName}{LastName}"; } }
+        public string? FullName { get { return $"{FirstName} {LastName}"; } }
 
         [NotMapped]
         [DataType(DataType.Upload)]
