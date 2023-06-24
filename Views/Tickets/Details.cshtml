@@ -65,7 +65,7 @@
                             </div>
                             <div class="card-body" style="overflow-y:auto;height:600px;">
 
-                                <form class="form-horizontal form-bordered" asp-action="AddTicketComment" asp-controller="Tickets" method="post">
+                                <form asp-action="AddTicketComment" asp-controller="Tickets" method="post">
                                     <input type="hidden" asp-for="Id" name="TicketId" />
                                     @if (Model.DeveloperUserId == btUser.Id || Model.OwnerUserId == btUser.Id || projectManager?.Id == btUser.Id || User.IsInRole(nameof(Roles.Admin)))
                                     {
@@ -90,7 +90,7 @@
 
                                     @foreach (TicketComment comment in Model.Comments)
                                     {
-                                        <li class="online-mb-4">
+                                        <li class="mb-4">
                                             <div class="media">
                                                 <a href="javascript:void(0);">
                                                     @if (btUser?.AvatarFileData != null)
@@ -99,11 +99,11 @@
                                                     }
                                                     else
                                                     {
-                                                        <img class="media-object" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width:30px;height:30px">
+                                                        <img class="media-object" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width:30px; height:30px">
                                                     }
                                                 </a>
                                                 <div class="media-body">
-                                                    <span class="text-muted" style="font-size:x-small;">
+                                                    <span class="text-muted" style="font-size: x-small;">
                                                         @@ @comment.User.FullName
                                                         <small class="float-start">@comment.Created.ToString("MM.dd.yyyy h:ss tt")</small>
                                                     </span>

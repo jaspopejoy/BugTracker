@@ -219,9 +219,9 @@ namespace BugTracker.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AddTicketComment([Bind("Id,ticketId,Comment")] TicketComment ticketComment)
+        public async Task<IActionResult> AddTicketComment([Bind("Id, TicketId, Comment")] TicketComment ticketComment)
         {
-            if(ModelState.IsValid)
+            if (ModelState.IsValid)
             {
                 try
                 {
@@ -229,6 +229,7 @@ namespace BugTracker.Controllers
                     ticketComment.Created = DateTimeOffset.Now;
 
                     await _ticketService.AddTicketCommentAsync(ticketComment);
+
                 }
                 catch (Exception)
                 {
@@ -237,7 +238,7 @@ namespace BugTracker.Controllers
                 }
             }
 
-            return RedirectToAction("Details", new {id = ticketComment.TicketId});
+            return RedirectToAction("Details", new { id = ticketComment.TicketId });
         }
 
         // GET: Tickets/Archived/5
