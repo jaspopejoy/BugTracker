@@ -51,7 +51,7 @@ namespace BugTracker.Services
             }
         }
 
-        public async Task AddTicketCommentAsync(TicketComment ticketComment)
+		public async Task AddTicketCommentAsync(TicketComment ticketComment)
         {
             try
             {
@@ -306,6 +306,20 @@ namespace BugTracker.Services
 
                 throw;
             }          
+        }
+
+        public async Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment)
+        {
+            try
+            {
+                await _context.AddAsync(ticketAttachment);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
         }
 
         public async Task<BTUser> GetTicketDeveloperAsync(int ticketId, int companyId)

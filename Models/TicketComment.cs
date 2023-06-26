@@ -8,7 +8,7 @@ namespace BugTracker.Models
         public int Id { get; set; }
 
         [DisplayName("Member Comment")]
-        public string Comment { get; set; }
+        public string? Comment { get; set; }
 
         [DisplayName("Date")]
         public DateTimeOffset Created { get; set; }
@@ -17,11 +17,11 @@ namespace BugTracker.Models
         public int TicketId { get; set; }
 
         [DisplayName("Team Member")]
-        public string UserId { get; set; }
+        public string? UserId { get; set; }
 
 
         //Navigation Properties
-        public virtual Ticket Ticket { get; set; }
-        public virtual BTUser User { get; set; }
+        public virtual Ticket? Ticket { get; set; }
+        public virtual BTUser? User { get; set; }
     }
 }
