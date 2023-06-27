@@ -71,7 +71,7 @@ namespace BugTracker.Controllers
 
             int companyId = User.Identity.GetCompanyId().Value;
 
-            if(User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
+            if (User.IsInRole(nameof(Roles.Admin)) || User.IsInRole(nameof(Roles.ProjectManager)))
             {
                 projects = await _companyInfoService.GetAllProjectsAsync(companyId);
             }
@@ -90,6 +90,45 @@ namespace BugTracker.Controllers
 
             List<Project> projects = await _projectService.GetArchivedProjectsByCompanyAsync(companyId);
             return View(projects);
+        }
+
+        //GET: Projects/Unassigned Projects
+        public async Task<IActionResult> UnassignedProjects()
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            List<Project> projects = new();
+
+            projects = await _projectService.GetUnassignedProjectsAsync(companyId);
+
+            return View(projects);
+        }
+
+        //GET: Projects/Assign Project Manager
+        public async Task<IActionResult> AssignPM(int projectId)
+        {
+            int companyId = User.Identity.GetCompanyId().Value;
+
+            AssignPMViewModel model = new();
+
+            model.Project = await _projectService.GetProjectByIdAsync(projectId, companyId);
+            model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(nameof(Roles.ProjectManager), companyId), "Id", "FullName");
+       
+            return View(model);
+        }
+
+        //POST: Projects/Assign Project Manager
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> AssignPM(AssignPMViewModel model)
+        {
+            if (!string.IsNullOrEmpty(model.PMID))
+            {
+                await _projectService.AddProjectManagerAsync(model.PMID, model.Project.Id);
+
+                return RedirectToAction(nameof(Details), new { id = model.Project.Id });
+            }
+            return RedirectToAction(nameof(AssignPM), new {projectId = model.Project.Id });
         }
 
         // GET: Projects/Details/5
@@ -138,7 +177,7 @@ namespace BugTracker.Controllers
 
                 try
                 {
-                    if(model.Project.ImageFormFile != null)
+                    if (model.Project.ImageFormFile != null)
                     {
                         model.Project.ImageFileData = await _fileService.ConvertFileToByteArrayAsync(model.Project.ImageFormFile);
                         model.Project.ImageFileName = model.Project.ImageFormFile.FileName;
@@ -150,7 +189,7 @@ namespace BugTracker.Controllers
                     await _projectService.AddNewProjectAsync(model.Project);
 
                     //Add PM if one was chosen
-                    if(!string.IsNullOrEmpty(model.PmId))
+                    if (!string.IsNullOrEmpty(model.PmId))
                     {
                         await _projectService.AddProjectManagerAsync(model.PmId, model.Project.Id);
                     }
@@ -179,7 +218,7 @@ namespace BugTracker.Controllers
             AddProjectWithPMViewModel model = new();
 
             model.Project = await _projectService.GetProjectByIdAsync(id.Value, companyId);
-                
+
             //Load SelectLists with data ie. PMList & PriorityList
             model.PMList = new SelectList(await _rolesService.GetUsersInRoleAsync(Roles.ProjectManager.ToString(), companyId), "Id", "FullName");
             model.PriorityList = new SelectList(await _lookupService.GetProjectPrioritiesAsync(), "Id", "Name");

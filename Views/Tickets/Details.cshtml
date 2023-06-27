@@ -18,6 +18,23 @@
 
 <h1>Ticket Details</h1>
 
+@if (!string.IsNullOrEmpty(Model.DeveloperUserId))
+{
+    <a href="javascript:void(0);">
+        @if (Model.DeveloperUser?.AvatarFileData != null)
+        {
+            <img class="media-object" src="data:image/*;base64,@(Convert.ToBase64String(btUser.AvatarFileData))" alt="">
+        }
+        else
+        {
+            <img class="media-object" src="https://cdn.icon-icons.com/icons2/1378/PNG/512/avatardefault_92824.png" alt="" style="width:30px; height:30px">
+        }
+    </a>
+    <span class="text-muted" style="font-size: x-small;">
+        Developer: <strong>@Model.DeveloperUser.FullName</strong>
+    </span>
+}
+
 <div>
     <div classxfont-weighteighteightgetainer-fluid">
         <div class="row gy-2">
@@ -183,7 +200,19 @@
                             <hr />
                         </div>
                         <div class="card-body" style="overflow-y:auto;height:1000px;background-color:antiquewhite">
-                            @*Loop to show the history entries for the Ticket*@
+                            @foreach (TicketHistory history in Model.History)
+                            {
+                                <div class="">
+                                    <span class="date">@history.Created.ToString("dd MMM yyyy")</span>
+                                    <h6>@history.Description</h6>
+                                    <span>By: <a nref="" title="history.User.FullName">@history.User.FullName</a></span>
+                                    <div class="">
+                                        <p>The ticket <b>@history.Property</b> was edited</p>
+                                        <p>@($"Previous {history.Property}: {history.OldValue}")</p>
+                                        <p>@($"Previous {history.Property}: {history.NewValue}")</p>
+                                    </div>
+                                </div>
+                            }
                         </div>
                     </div>
                 </div>

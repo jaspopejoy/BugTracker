@@ -10,7 +10,9 @@ namespace BugTracker.Services.Interfaces
         public Task<Ticket> GetTicketByIdAsync(int ticketId);
         public Task ArchiveTicketAsync(Ticket ticket);
 
-		public Task AddTicketCommentAsync(TicketComment ticketComment);
+        public Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment);
+
+        public Task AddTicketCommentAsync(TicketComment ticketComment);
 
         public Task AssignTicketAsync(int ticketId, string userId);
 
@@ -38,8 +40,10 @@ namespace BugTracker.Services.Interfaces
 
         public Task<List<Ticket>> GetProjectTicketsByTypeAsync(string typeName, int companyId, int projectId);
 
+        public Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId);
 
-        public Task AddTicketAttachmentAsync(TicketAttachment ticketAttachment);
+        public Task<List<Ticket>> GetUnassignedTicketsAsync(int companyId);
+
 
         public Task<int?> LookupTicketPriorityIdAsync(string priorityName);
 

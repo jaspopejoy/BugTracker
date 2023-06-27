@@ -95,7 +95,7 @@ namespace BugTracker.Services
                 project.Archived = true;
                 await UpdateProjectAsync(project);
 
-                foreach(Ticket ticket in project.Tickets)
+                foreach (Ticket ticket in project.Tickets)
                 {
                     ticket.ArchivedByProject = true;
                     _context.Update(ticket);
@@ -223,6 +223,7 @@ namespace BugTracker.Services
             return null;
         }
 
+        #region Get Unassigned Projects
         public async Task<List<BTUser>> GetProjectMembersByRoleAsync(int projectId, string role)
         {
             Project project = await _context.Projects
@@ -239,10 +240,38 @@ namespace BugTracker.Services
             }
             return members;
         }
+        #endregion
 
         public Task<List<BTUser>> GetSubmittersOnProjectAsync(int projectId)
         {
             throw new NotImplementedException();
+        }
+
+        public async Task<List<Project>> GetUnassignedProjectsAsync(int companyId)
+        {
+            List<Project> result = new();
+            List<Project> projects = new();
+
+            try
+            {
+                projects = await _context.Projects
+                                         .Include(p => p.ProjectPriority)
+                                         .Where(p => p.CompanyId == companyId).ToListAsync();
+
+                foreach (Project project in projects)
+                {
+                    if ((await GetProjectMembersByRoleAsync(project.Id, nameof(Roles.ProjectManager))).Count == 0)
+                    {
+                        result.Add(project);
+                    }
+                }
+            }
+            catch (Exception)
+            {
+
+                throw;
+            }
+            return result;
         }
 
         public async Task<List<Project>> GetUserProjectsAsync(string userId)
@@ -295,7 +324,7 @@ namespace BugTracker.Services
             {
                 string projectManagerId = (await GetProjectManagerAsync(projectId))?.Id;
 
-                if(projectManagerId == userId)
+                if (projectManagerId == userId)
                 {
                     return true;
                 }
