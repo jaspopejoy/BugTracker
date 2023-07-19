@@ -1,4 +1,5 @@
 using BugTracker.Data;
+using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.Services;
 using BugTracker.Services.Factories;
