@@ -46,9 +46,6 @@ builder.Services.AddControllersWithViews();
 
 var app = builder.Build();
 
-var scope = app.Services.CreateScope();
-await DataHelper.ManageDataAsync(scope.ServiceProvider);
-
 await DataUtility.ManageDataAsync(app);
 
 // Configure the HTTP request pipeline.
