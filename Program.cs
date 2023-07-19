@@ -6,6 +6,7 @@ using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration.UserSecrets;
 using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -43,6 +44,9 @@ builder.Services.AddControllersWithViews();
 
 
 var app = builder.Build();
+
+var scope = app.Services.CreateScope();
+await DataHelper.ManageDataAsync(scope.ServiceProvider);
 
 await DataUtility.ManageDataAsync(app);
 
