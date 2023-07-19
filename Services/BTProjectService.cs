@@ -60,7 +60,7 @@ namespace BugTracker.Services
         {
             BTUser user = await _context.Users.FirstOrDefaultAsync(u => u.Id == userId);
 
-            if (user == null)
+            if (user != null)
             {
                 Project project = await _context.Projects.FirstOrDefaultAsync(p => p.Id == projectId);
                 if (!await IsUserOnProjectAsync(userId, projectId))

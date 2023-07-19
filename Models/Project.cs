@@ -47,9 +47,9 @@ namespace BugTracker.Models
         public bool Archived { get; set; }
 
         //Navigation Properties
-        public virtual Company? Company { get; set; }
-        public virtual ProjectPriority? ProjectPriority { get; set; }
-        public ICollection<BTUser>? Members { get; set; }
-        public virtual ICollection<Ticket>? Tickets { get; set; }
+        public virtual Company Company { get; set; }
+        public virtual ProjectPriority ProjectPriority { get; set; }
+        public ICollection<BTUser> Members { get; set; }
+        public virtual ICollection<Ticket> Tickets { get; set; }
     }
 }

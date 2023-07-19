@@ -19,7 +19,7 @@ namespace BugTracker.Services
         {
             MimeMessage email = new();
 
-            email.Sender = MailboxAddress.Parse(_mailSettings.Mail);
+            email.Sender = MailboxAddress.Parse(_mailSettings.EMail);
             email.To.Add(MailboxAddress.Parse(emailTo));
             email.Subject = subject;
 
@@ -33,8 +33,8 @@ namespace BugTracker.Services
             try
             {
                 using var smtp = new SmtpClient();
-                smtp.Connect(_mailSettings.Host, _mailSettings.Port, MailKit.Security.SecureSocketOptions.StartTls);
-                smtp.Authenticate(_mailSettings.Mail, _mailSettings.Password);
+                smtp.Connect(_mailSettings.MailHost, _mailSettings.MailPort, MailKit.Security.SecureSocketOptions.StartTls);
+                smtp.Authenticate(_mailSettings.EMail, _mailSettings.MailPassword);
 
                 await smtp.SendAsync(email);
 

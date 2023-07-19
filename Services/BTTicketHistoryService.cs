@@ -8,12 +8,22 @@ namespace BugTracker.Services
 {
     public class BTTicketHistoryService : IBTTicketHistoryService
     {
+        #region Properties
+
         private readonly ApplicationDbContext _context;
+
+        #endregion
+
+        #region Contstructor
 
         public BTTicketHistoryService(ApplicationDbContext context)
         {
             _context = context;
         }
+
+        #endregion
+
+        #region Add History (1)
 
         public async Task AddHistoryAsync(Ticket oldTicket, Ticket newTicket, string UserId)
         {
@@ -153,6 +163,43 @@ namespace BugTracker.Services
             }
         }
 
+        #endregion
+
+        #region Add History (2)
+
+        public async Task AddHistoryAsync(int ticketId, string model, string userId)
+        {
+            try
+            {
+                Ticket ticket = await _context.Tickets.FindAsync(ticketId);
+                string description = model.ToLower().Replace("ticket", "");
+                description = $"new {description} added to ticket: {ticket.Title}";
+
+                TicketHistory history = new()
+                {
+                    TicketId = ticket.Id,
+                    Property = model,
+                    OldValue = "",
+                    NewValue = "",
+                    Created = DateTimeOffset.Now,
+                    UserId = userId,
+                    Description = description
+                };
+
+                await _context.TicketHistories.AddAsync(history);   
+                await _context.SaveChangesAsync();
+
+            } 
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
+        #endregion
+
+        #region Get Company Ticket Histories
+
         public async Task<List<TicketHistory>> GetCompanyTicketsHistoriesAsync(int companyId)
         {
             try
@@ -177,6 +224,10 @@ namespace BugTracker.Services
             }
         }
 
+        #endregion
+
+        #region Get Project Tickets Histories
+
         public async Task<List<TicketHistory>> GetProjectTicketsHistoriesAsync(int projectId, int companyId)
         {
             try
@@ -198,5 +249,8 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
+        #endregion
+
     }
 }

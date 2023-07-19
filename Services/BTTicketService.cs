@@ -51,7 +51,7 @@ namespace BugTracker.Services
             }
         }
 
-		public async Task AddTicketCommentAsync(TicketComment ticketComment)
+        public async Task AddTicketCommentAsync(TicketComment ticketComment)
         {
             try
             {
@@ -93,6 +93,7 @@ namespace BugTracker.Services
                 throw;
             }
         }
+
 
         public async Task<List<Ticket>> GetAllTicketsByCompanyAsync(int companyId)
         {
@@ -207,6 +208,26 @@ namespace BugTracker.Services
             }
         }
 
+
+        public async Task<Ticket> GetTicketAsNoTrackingAsync(int ticketId)
+        {
+            try
+            {
+                return await _context.Tickets
+                                 .Include(t => t.DeveloperUser)
+                                 .Include(t => t.Project)
+                                 .Include(t => t.TicketPriority)
+                                 .Include(t => t.TicketStatus)
+                                 .Include(t => t.TicketType)
+                                 .AsNoTracking()
+                                 .FirstOrDefaultAsync(t => t.Id == ticketId);
+            }
+            catch (Exception)
+            {
+                throw;
+            }
+        }
+
         public async Task<List<Ticket>> GetArchivedTicketsAsync(int companyId)
         {
             try
@@ -253,6 +274,7 @@ namespace BugTracker.Services
             }
         }
 
+        
         public async Task<List<Ticket>> GetProjectTicketsByStatusAsync(string statusName, int companyId, int projectId)
         {
             List<Ticket> tickets = new();
@@ -305,7 +327,7 @@ namespace BugTracker.Services
             {
 
                 throw;
-            }          
+            }
         }
 
         public async Task<TicketAttachment> GetTicketAttachmentByIdAsync(int ticketAttachmentId)
