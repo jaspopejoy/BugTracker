@@ -1,5 +1,4 @@
 using BugTracker.Data;
-using BugTracker.Helpers;
 using BugTracker.Models;
 using BugTracker.Services;
 using BugTracker.Services.Factories;
@@ -7,8 +6,6 @@ using BugTracker.Services.Interfaces;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.Configuration.UserSecrets;
-using System.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
 
